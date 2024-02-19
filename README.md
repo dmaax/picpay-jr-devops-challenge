@@ -13,3 +13,7 @@ Notei um typo no [docker-compose](./docker-compose.yaml), dessa vez tem a ver co
 ## Portas trocadas no docker-compose
 
 Ao ler os arquivos [main.py](./services/writer/main.py) e [main.go](./services/reader/main.go), pude perceber que o `reader` deve escutar na porta 8080 e o `writer` deve escutar na porta 8081, o que não acontece no [docker-compose](./docker-compose.yaml), já que as portas estão trocadas, para corrigir foi necessário inverter as portas.
+
+## Baixando dependências no Dockerfile (main.go)
+
+Este [Dockerfile](./services/reader/Dockerfile) não continha os comandos para baixar as dependências usadas pelo [main.go](./services/reader/main.go), para solucionar foi preciso inicializar o go mod com `RUN ["go","mod","init"]` e adicionar as dependências com `RUN ["go","get","github.com/go-redis/redis"]` e `["go","get","github.com/rs/cors""]`.
