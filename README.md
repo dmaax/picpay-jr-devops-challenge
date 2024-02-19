@@ -25,3 +25,7 @@ Ao rodar o  [docker-compose](./docker-compose.yaml) com `docker-compose down; do
 ## Outra descoberta rodando o docker-compose
 
 Outra coisa que acontece ao rodar o [docker-compose](docker-compose.yaml) é que o serviço web (frontend) reporta estar escutando na porta 3000 mas a porta declarada é a 5000. Solucionar esse problema é bem simples, será preciso mudar a propriedade `ports` do serviço `web` de `5000:5000` para `3000:3000`.
+
+## Corrigindo o erro ao tentar rodar o writer
+
+Rodando o [docker-compose](docker-compose.yaml) é possível perceber que o serviço `writer` não sobe, para corrigir isso foi necessaŕio adicionar o comando para baixar as dependências (redis) e alterar o comando para rodar a aplicação em si.
