@@ -3,24 +3,30 @@ services:
   web:
     build: services/frontend
     ports:
-      - "5000:5000"
+      - "3000:3000"
     networks:
       - frontend
       - backend
   reader:
     build: services/reader
     ports:
-      - "8081:8081"
+      - "8080:8080"
     networks:
       - frontend
+      - cache
   writer:
     build: services/writer
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
       - backend
-  reids:
+      - cache
+  redis:
     image: "redis:alpine"
+    networks:
+      - cache
 
 networks:
+  frontend:
   backend:
+  cache:

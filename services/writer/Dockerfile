@@ -2,5 +2,8 @@ FROM python:3.9
 WORKDIR /app
 ADD . /app
 EXPOSE 8081
-CMD ["python"]
-ENTRYPOINT ["main.py"]
+# Install dependencies
+RUN pip install redis
+
+# Run the app
+CMD ["python", "main.py"]

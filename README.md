@@ -1,32 +1,43 @@
-# Desafio DevOps jr PicPay
+# Solucionando problemas
 
-Obrigado pelo interesse em fazer parte do nosso time! Preparamos este desafio com carinho para ajudar a entender um pouco mais dos seus conhecimentos na área de DevOps/SRE
+Aqui estão as minhas anotações pessoais de raciocínio para resolver esse desafio.
 
-Se não entender algum conceito ou parte do problema, não é motivo para se preocupar! Queremos que faça o desafio até onde souber.
+## Primeiros passos com docker-compose
 
-No mais, divirta-se :D
+Primeiramente notei que o [docker-compose](./docker-compose.yaml) continha a rede `backend` declarada no final do arquivo e que os containers declarados utilizavam a mesma, percebi que alguns containers usavam a rede `frontend` mas ela não havia sido declarada como a anterior, portanto declarei ela.
 
-## Conteúdo do repositório
-Na pasta `services` deste repositório existem 3 aplicações, um frontend que se comunica com um backend go e um em python, e estes se comunicam com um Redis para troca de informações. Tudo isso é orquestrado pelo docker-compose na raiz do repositório.
+## Mais um erro no docker-compose
 
-As aplicações contém falhas propositais, de código, projeto, imagem docker, etc. Embora cada aplicação funcione individualmente, o conjunto não sobe...
+Notei um typo no [docker-compose](./docker-compose.yaml), dessa vez tem a ver com o banco de dados em memória [Redis](https://redis.io/). A imagem docker está correta entretando o nome do serviço está como `reids`. Lendo o arquivo [main.go](./services/reader/main.go) é possível indentificar que ele tenta conectar com o host `redis`, logo esse deve ser o nome do service no arquivo docker-compose.
 
-## O que deve ser feito?
+## Portas trocadas no docker-compose
 
-Faça um fork deste repositório e envie uma pull request contendo:
-- ajustes que fazem todas as aplicações subirem e se comunicarem
-- um README contendo os seus pensamentos ao longo do projeto
-- um desenho contendo os serviços que explique o funcionamento
+Ao ler os arquivos [main.py](./services/writer/main.py) e [main.go](./services/reader/main.go), pude perceber que o `reader` deve escutar na porta 8080 e o `writer` deve escutar na porta 8081, o que não acontece no [docker-compose](./docker-compose.yaml), já que as portas estão trocadas, para corrigir foi necessário inverter as portas.
 
-Faça commits ao longo do processo, queremos entender o seu modo de pensar! :)
+## Baixando dependências no Dockerfile (main.go)
 
-Para a entrevista, separe também anotações contendo melhorias que faria em cada aplicação e o motivo. Não envie estas anotações na pull request.
+Este [Dockerfile](./services/reader/Dockerfile) não continha os comandos para baixar as dependências usadas pelo [main.go](./services/reader/main.go), para solucionar foi preciso inicializar o go mod com `RUN ["go","mod","init"]` e adicionar as dependências com `RUN ["go","get","github.com/go-redis/redis"]` e `["go","get","github.com/rs/cors""]`.
 
-## Bibliografia recomendada
-https://docs.docker.com/engine/reference/builder/
+## Rodando os serviços e bugfix (main.go)
 
-https://docs.docker.com/compose/compose-file/
+Ao rodar o  [docker-compose](./docker-compose.yaml) com `docker-compose down; docker-compose up --build` notei que a aplicação `reader` retornava o seguinte erro: `./main.go:27:26: too many arguments in call to client.cmdable.Get`, para arrumar isso foi preciso apenas remover o primeiro argumento já que segundo o erro, esperamos apenas um argumento e não dois.
 
-https://12factor.net/
+## Outra descoberta rodando o docker-compose
 
-https://conventionalcommits.org/
+Outra coisa que acontece ao rodar o [docker-compose](docker-compose.yaml) é que o serviço web (frontend) reporta estar escutando na porta 3000 mas a porta declarada é a 5000. Solucionar esse problema é bem simples, será preciso mudar a propriedade `ports` do serviço `web` de `5000:5000` para `3000:3000`.
+
+## Corrigindo o erro ao tentar rodar o writer
+
+Rodando o [docker-compose](docker-compose.yaml) é possível perceber que o serviço `writer` não sobe, para corrigir isso foi necessaŕio adicionar o comando para baixar as dependências (redis) e alterar o comando para rodar a aplicação em si.
+
+## Correção final do docker-compose
+
+Acabei criando no [docker-compose](docker-compose.yaml) uma rede chamada `cache` que diz respeito ao serviço do Redis e conectei os serviços a ela, isso fez com que o teste realizado ao visitar `localhost:3000/#writer` e tentar cadastrar um valor para ler em `http://localhost:3000/#reader` fosse um sucesso. Antes disso a aplicação em python não conseguia identificar o host `redis` e portanto o teste falhava, não é mais o caso.
+
+## La fin 🙌
+Cheguei ao final desse challenge e todas as aplicações estão funcionando devidamente
+
+- [x] Corrigir docker-compose.yaml e Dockerfiles
+- [x] Criar as redes necessárias
+- [x] Corrigir bugs no código
+- [x] Fazer tudo funcionar
