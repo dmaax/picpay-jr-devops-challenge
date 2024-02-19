@@ -33,3 +33,11 @@ Rodando o [docker-compose](docker-compose.yaml) é possível perceber que o serv
 ## Correção final do docker-compose
 
 Acabei criando no [docker-compose](docker-compose.yaml) uma rede chamada `cache` que diz respeito ao serviço do Redis e conectei os serviços a ela, isso fez com que o teste realizado ao visitar `localhost:3000/#writer` e tentar cadastrar um valor para ler em `http://localhost:3000/#reader` fosse um sucesso. Antes disso a aplicação em python não conseguia identificar o host `redis` e portanto o teste falhava, não é mais o caso.
+
+## La fin 🙌
+Cheguei ao final desse challenge e todas as aplicações estão funcionando devidamente
+
+- [x] Corrigir docker-compose.yaml e Dockerfiles
+- [x] Criar as redes necessárias
+- [x] Corrigir bugs no código
+- [x] Fazer tudo funcionar
