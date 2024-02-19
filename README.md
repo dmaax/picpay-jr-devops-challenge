@@ -9,3 +9,7 @@ Primeiramente notei que o [docker-compose](./docker-compose.yaml) continha a red
 ## Mais um erro no docker-compose
 
 Notei um typo no [docker-compose](./docker-compose.yaml), dessa vez tem a ver com o banco de dados em memória [Redis](https://redis.io/). A imagem docker está correta entretando o nome do serviço está como `reids`. Lendo o arquivo [main.go](./services/reader/main.go) é possível indentificar que ele tenta conectar com o host `redis`, logo esse deve ser o nome do service no arquivo docker-compose.
+
+## Portas trocadas no docker-compose
+
+Ao ler os arquivos [main.py](./services/writer/main.py) e [main.go](./services/reader/main.go), pude perceber que o `reader` deve escutar na porta 8080 e o `writer` deve escutar na porta 8081, o que não acontece no [docker-compose](./docker-compose.yaml), já que as portas estão trocadas, para corrigir foi necessário inverter as portas.
