@@ -29,3 +29,7 @@ Outra coisa que acontece ao rodar o [docker-compose](docker-compose.yaml) é que
 ## Corrigindo o erro ao tentar rodar o writer
 
 Rodando o [docker-compose](docker-compose.yaml) é possível perceber que o serviço `writer` não sobe, para corrigir isso foi necessaŕio adicionar o comando para baixar as dependências (redis) e alterar o comando para rodar a aplicação em si.
+
+## Correção final do docker-compose
+
+Acabei criando no [docker-compose](docker-compose.yaml) uma rede chamada `cache` que diz respeito ao serviço do Redis e conectei os serviços a ela, isso fez com que o teste realizado ao visitar `localhost:3000/#writer` e tentar cadastrar um valor para ler em `http://localhost:3000/#reader` fosse um sucesso. Antes disso a aplicação em python não conseguia identificar o host `redis` e portanto o teste falhava, não é mais o caso.
