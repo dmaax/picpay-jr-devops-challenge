@@ -21,3 +21,7 @@ Este [Dockerfile](./services/reader/Dockerfile) não continha os comandos para b
 ## Rodando os serviços e bugfix (main.go)
 
 Ao rodar o  [docker-compose](./docker-compose.yaml) com `docker-compose down; docker-compose up --build` notei que a aplicação `reader` retornava o seguinte erro: `./main.go:27:26: too many arguments in call to client.cmdable.Get`, para arrumar isso foi preciso apenas remover o primeiro argumento já que segundo o erro, esperamos apenas um argumento e não dois.
+
+## Outra descoberta rodando o docker-compose
+
+Outra coisa que acontece ao rodar o [docker-compose](docker-compose.yaml) é que o serviço web (frontend) reporta estar escutando na porta 3000 mas a porta declarada é a 5000. Solucionar esse problema é bem simples, será preciso mudar a propriedade `ports` do serviço `web` de `5000:5000` para `3000:3000`.
