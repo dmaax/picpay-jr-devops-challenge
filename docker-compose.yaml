@@ -13,15 +13,20 @@ services:
       - "8080:8080"
     networks:
       - frontend
+      - cache
   writer:
     build: services/writer
     ports:
       - "8081:8081"
     networks:
       - backend
+      - cache
   redis:
     image: "redis:alpine"
+    networks:
+      - cache
 
 networks:
   frontend:
   backend:
+  cache:
