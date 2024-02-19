@@ -17,3 +17,7 @@ Ao ler os arquivos [main.py](./services/writer/main.py) e [main.go](./services/r
 ## Baixando dependências no Dockerfile (main.go)
 
 Este [Dockerfile](./services/reader/Dockerfile) não continha os comandos para baixar as dependências usadas pelo [main.go](./services/reader/main.go), para solucionar foi preciso inicializar o go mod com `RUN ["go","mod","init"]` e adicionar as dependências com `RUN ["go","get","github.com/go-redis/redis"]` e `["go","get","github.com/rs/cors""]`.
+
+## Rodando os serviços e bugfix (main.go)
+
+Ao rodar o  [docker-compose](./docker-compose.yaml) com `docker-compose down; docker-compose up --build` notei que a aplicação `reader` retornava o seguinte erro: `./main.go:27:26: too many arguments in call to client.cmdable.Get`, para arrumar isso foi preciso apenas remover o primeiro argumento já que segundo o erro, esperamos apenas um argumento e não dois.
