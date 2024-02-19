@@ -23,4 +23,5 @@ services:
     image: "redis:alpine"
 
 networks:
+  frontend:
   backend:
